@@ -16,8 +16,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        String query = "create table if not exists mydb.users (id int auto_increment primary key, " +
-                "name varchar(45), lastname varchar(45), age tinyint)";
+        String query = "create table if not exists users (id int auto_increment primary key, " +
+                "name  varchar(45), lastname varchar(45), age tinyint)";
         try (Statement statement = new Util().getConnection().createStatement()) {
             statement.executeUpdate(query);
             System.out.println("Table created successfully");
@@ -37,7 +37,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        String query = "insert into mydb.users (name, lastname, age) values (?, ?, ?)";
+        String query = "insert into users (name, lastname, age) values (?, ?, ?)";
         try(PreparedStatement statement = new Util().getConnection().prepareStatement(query)) {
             statement.setString(1, name);
             statement.setString(2, lastName);
@@ -50,7 +50,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-        String query = "delete from mydb.users where id = ?";
+        String query = "delete from users where id = ?";
         try(PreparedStatement statement = new Util().getConnection().prepareStatement(query)) {
             statement.setLong(1, id);
             statement.executeUpdate();
@@ -61,7 +61,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public List<User> getAllUsers() {
-        String query = "select * from mydb.users";
+        String query = "select * from users";
         List<User> users = new ArrayList<User>();
         try(Statement statement = new Util().getConnection().createStatement()) {
             ResultSet rs = statement.executeQuery(query);
@@ -82,7 +82,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        String query = "delete from mydb.users";
+        String query = "delete from users";
         try(Statement statement = new Util().getConnection().createStatement()){
             statement.executeUpdate(query);
             System.out.println("Table cleaned successfully");
