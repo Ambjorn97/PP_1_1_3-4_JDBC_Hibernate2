@@ -11,13 +11,13 @@ import java.sql.SQLException;
 
 public class Util {
     // реализуйте настройку соеденения с БД
-    private final String URL = "jdbc:mysql://localhost:3306/mydb";
-    private final String USER = "root";
-    private final String PASSWORD = "springcourse";
-    private Connection connection;
-    private SessionFactory sessionFactory;
+    private static final String URL = "jdbc:mysql://localhost:3306/mydb";
+    private static final String USER = "root";
+    private static final String PASSWORD = "springcourse";
+    private static Connection connection;
+    private static SessionFactory sessionFactory;
 
-    public Util() {
+    static {
         try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (SQLException e) {
@@ -31,10 +31,13 @@ public class Util {
             System.out.println("Failed to create session factory");
         }
 
+    }
+
+    public Util() {
 
     }
 
-    private Configuration getConfiguration() {
+    private static Configuration getConfiguration() {
         Configuration configuration = new Configuration();
         configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
         configuration.setProperty("hibernate.connection.url", URL);
@@ -47,10 +50,23 @@ public class Util {
         return configuration;
     }
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         return connection;
     }
-    public SessionFactory getSessionFactory() {
+
+    public static void closeConnection() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("Failed to close connection");
+        }
+    }
+
+    public static SessionFactory getSessionFactory() {
         return sessionFactory;
+    }
+
+    public static void closeSessionFactory() {
+        sessionFactory.close();
     }
 }
