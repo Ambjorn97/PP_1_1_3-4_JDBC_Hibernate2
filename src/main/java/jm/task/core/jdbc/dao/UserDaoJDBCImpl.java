@@ -38,54 +38,41 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     @Override
-    public void saveUser(String name, String lastName, byte age) {
+    public void saveUser(String name, String lastName, byte age) throws SQLException {
         String query = "insert into users (name, lastname, age) values (?, ?, ?)";
-        try {
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                connection.setAutoCommit(false);
-                statement.setString(1, name);
-                statement.setString(2, lastName);
-                statement.setByte(3, age);
-                statement.executeUpdate();
-                connection.commit();
-                System.out.println("user " + name + " created successfully");
-            } catch (SQLException e) {
-                connection.rollback();
-                System.out.println("Failed to save table");
-            }
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            connection.setAutoCommit(false);
+            statement.setString(1, name);
+            statement.setString(2, lastName);
+            statement.setByte(3, age);
+            statement.executeUpdate();
+            connection.commit();
+            connection.setAutoCommit(true);
+            System.out.println("user " + name + " created successfully");
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            connection.rollback();
+            System.out.println("Failed to save table");
         }
+
     }
 
     @Override
-    public void removeUserById(long id) {
+    public void removeUserById(long id) throws SQLException {
         String query = "delete from users where id = ?";
-        try {
-            connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setLong(1, id);
-                connection.commit();
-                statement.executeUpdate();
-                System.out.println("Row removed successfully");
-            } catch (SQLException e) {
-                System.out.println("Failed to remove row");
-            }
+
+        connection.setAutoCommit(false);
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, id);
+            statement.executeUpdate();
+            connection.commit();
+            connection.setAutoCommit(true);
+            System.out.println("Row removed successfully");
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            connection.rollback();
+            System.out.println("Failed to remove row");
         }
+
     }
 
     @Override

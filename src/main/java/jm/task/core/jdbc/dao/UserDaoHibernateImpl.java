@@ -2,6 +2,7 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -24,6 +25,8 @@ public class UserDaoHibernateImpl implements UserDao {
             session.createSQLQuery("create table if not exists users (id int auto_increment primary key, " +
                     "name  varchar(45), lastname varchar(45), age tinyint)").executeUpdate();
             session.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println("Failed to create users table");
         }
     }
 
@@ -33,6 +36,8 @@ public class UserDaoHibernateImpl implements UserDao {
             session.beginTransaction();
             session.createSQLQuery("drop table if exists users").executeUpdate();
             session.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println("Failed to drop users table");
         }
     }
 
@@ -83,6 +88,8 @@ public class UserDaoHibernateImpl implements UserDao {
                 user.setAge((Byte) row[3]);
                 users.add(user);
             }
+        } catch (Exception e) {
+            System.out.println("Failed to get all users");
         }
         return users;
     }
@@ -93,6 +100,8 @@ public class UserDaoHibernateImpl implements UserDao {
             session.beginTransaction();
             session.createSQLQuery("delete from users").executeUpdate();
             session.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println("Failed to clean users table");
         }
     }
 }
